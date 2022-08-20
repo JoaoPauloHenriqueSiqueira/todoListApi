@@ -10,7 +10,7 @@ class TodoList extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'user_id'];
+    protected $fillable = ['title', 'user_id', 'description'];
 
      public static function boot()
      {

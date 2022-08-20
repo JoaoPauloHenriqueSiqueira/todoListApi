@@ -19,7 +19,8 @@ class TodoListFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(),
-            'user_id' => User::factory()->create()
+            'user_id' => User::factory()->create(),
+            'description' => $this->faker->text()
         ];
     }
 }

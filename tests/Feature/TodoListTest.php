@@ -26,7 +26,7 @@ class TodoListTest extends TestCase
     public function test_an_user_can_store_a_new_todo_list()
     {
         $todoList = TodoList::factory()->raw();
-        $this->postJson(route('todo-list.index'), $todoList);
+        $this->postJson(route('todo-list.store'), $todoList);
         $this->assertDatabaseHas('todo_lists', ['user_id' => $this->user->id, 'title' => $todoList['title']]);
     }
 
@@ -65,6 +65,27 @@ class TodoListTest extends TestCase
 
         $response = $this->getJson(route('todo-list.index', ['active' => true]))->assertOk()->json('data');
         $this->assertEquals(2, count($response));
+    }
+
+    public function test_fetch_all_inactive_todo_lists_from_a_user()
+    {
+        $this->createTodoList(['active' => false]);
+        $this->createTodoList();
+        $this->createTodoList();
+        $this->createTodoList();
+
+        $response = $this->getJson(route('todo-list.index', ['active' => false]))->assertOk()->json('data');
+        $this->assertEquals(1, count($response));
+    }
+
+
+
+    public function test_user_cant_store_todo_list_without_title()
+    {
+        $this->withExceptionHandling();
+        $todoList = TodoList::factory()->raw();
+        unset($todoList['title']);
+        $this->postJson(route('todo-list.store'), $todoList)->assertUnprocessable()->assertJsonValidationErrors(['title']);;
     }
 
 

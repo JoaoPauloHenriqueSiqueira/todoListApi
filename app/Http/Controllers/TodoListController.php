@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TodoListRequest;
+use App\Http\Resources\TodoListResource;
 use App\Models\TodoList;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,13 +12,13 @@ class TodoListController extends Controller
 {
     public function index()
     {
-        $list = TodoList::allTodoListFromUser(auth()->id());
-        return $list;
+        return TodoListResource::collection(TodoList::allTodoListFromUser(auth()->id()));
     }
 
-    public function store(Request $request)
+    public function store(TodoListRequest $request)
     {
-        return TodoList::create($request->all());
+        $todoList = TodoList::create($request->validated());
+        return new TodoListResource($todoList);
     }
 
     public function update(TodoList $todoList, Request $request)
@@ -25,7 +27,9 @@ class TodoListController extends Controller
             return response('', Response::HTTP_NOT_FOUND);
         }
 
-        return $todoList->update($request->all());
+        $todoList->update($request->all());
+        return new TodoListResource($todoList);
+
     }
 
     public function destroy(TodoList $todoList)
