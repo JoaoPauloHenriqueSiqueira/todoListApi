@@ -51,31 +51,53 @@ class TodoListTest extends TestCase
         $this->createTodoList();
         $this->createTodoList();
 
+        $this->authUser();
+
+        $this->createTodoList();
+        $this->createTodoList();
+
         $response = $this->getJson(route('todo-list.index'))->assertOk()->json('data');
         $this->assertEquals(2, count($response));
     }
 
     public function test_only_active_todo_lists_can_be_created()
     {
-        $this->createTodoList(['active' => false]);
-        $this->createTodoList(['active' => false]);
-        $this->createTodoList(['active' => false]);
-        $this->createTodoList();
-
-        $response = $this->getJson(route('todo-list.index', ['active' => true]))->assertOk()->json('data');
-        $this->assertEquals(4, count($response));
-    }
-
-    public function test_only_active_todo_lists_can_be_c22reated()
-    {
         $todoList1 = $this->createTodoList();
-        $this->createTodoList();
-        $this->createTodoList();
-        $this->createTodoList();
+        $this->createTodoList(['active' => false]);
+        $this->createTodoList(['active' => false]);
+        $this->createTodoList(['active' => false]);
 
         $this->patchJson(route('todo-list.update', $todoList1->id), ['active' =>false]);
         $response = $this->getJson(route('todo-list.index', ['active' => false]))->assertOk()->json('data');
         $this->assertEquals(1, count($response));
+    }
+
+    public function test_sort_todo_lists_by_title_asc()
+    {
+        $this->createTodoList(['title' => 'CBA']);
+        $this->createTodoList(['title' => '1ABC']);
+        $this->createTodoList(['title' => '2CBC']);
+        $this->createTodoList(['title' => 'BCA']);
+        $this->createTodoList(['title' => 'ABC']);
+
+        $response = $this->getJson(route('todo-list.index', ['sort' => 'ASC']))->assertOk()->json('data');
+
+        $this->assertEquals('1ABC', $response[0]['title']);
+        $this->assertEquals('CBA', $response[4]['title']);
+    }
+
+    public function test_sort_todo_lists_by_title_desc()
+    {
+        $this->createTodoList(['title' => 'CBA']);
+        $this->createTodoList(['title' => '1ABC']);
+        $this->createTodoList(['title' => '2CBC']);
+        $this->createTodoList(['title' => 'BCA']);
+        $this->createTodoList(['title' => 'ABC']);
+
+        $response = $this->getJson(route('todo-list.index', ['sort' => 'DESC']))->assertOk()->json('data');
+
+        $this->assertEquals('CBA', $response[0]['title']);
+        $this->assertEquals('1ABC', $response[4]['title']);
     }
 
 

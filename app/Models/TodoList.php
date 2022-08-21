@@ -26,7 +26,8 @@ class TodoList extends Model
         return app(Pipeline::class)
             ->send(TodoList::query())
             ->through([
-                \App\QueryFilters\Active::class
+                \App\QueryFilters\Active::class,
+                \App\QueryFilters\Sort::class
             ])
             ->thenReturn()
             ->where(['user_id' => $userId])
