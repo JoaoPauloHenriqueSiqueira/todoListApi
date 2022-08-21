@@ -10,15 +10,16 @@ class TodoList extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'user_id', 'description'];
+    protected $fillable = ['title', 'user_id', 'description', 'has_timer', 'active'];
 
-     public static function boot()
-     {
-         parent::boot();
-         self::creating(function($item){
-             $item->user_id = auth()->id();
-         });
-     }
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($item) {
+            $item->user_id = auth()->id();
+            $item->active = true;
+        });
+    }
 
     public static function allTodoListFromUser($userId)
     {
@@ -28,7 +29,7 @@ class TodoList extends Model
                 \App\QueryFilters\Active::class
             ])
             ->thenReturn()
-            ->where(['user_id'=>$userId])
+            ->where(['user_id' => $userId])
             ->paginate(5);
     }
 }

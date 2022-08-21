@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\TodoList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class TodoListTest extends TestCase
@@ -54,30 +55,28 @@ class TodoListTest extends TestCase
         $this->assertEquals(2, count($response));
     }
 
-    public function test_fetch_all_active_todo_lists_from_a_user()
+    public function test_only_active_todo_lists_can_be_created()
     {
         $this->createTodoList(['active' => false]);
         $this->createTodoList(['active' => false]);
         $this->createTodoList(['active' => false]);
-        $this->createTodoList(['active' => false]);
-        $this->createTodoList();
         $this->createTodoList();
 
         $response = $this->getJson(route('todo-list.index', ['active' => true]))->assertOk()->json('data');
-        $this->assertEquals(2, count($response));
+        $this->assertEquals(4, count($response));
     }
 
-    public function test_fetch_all_inactive_todo_lists_from_a_user()
+    public function test_only_active_todo_lists_can_be_c22reated()
     {
-        $this->createTodoList(['active' => false]);
+        $todoList1 = $this->createTodoList();
         $this->createTodoList();
         $this->createTodoList();
         $this->createTodoList();
 
+        $this->patchJson(route('todo-list.update', $todoList1->id), ['active' =>false]);
         $response = $this->getJson(route('todo-list.index', ['active' => false]))->assertOk()->json('data');
         $this->assertEquals(1, count($response));
     }
-
 
 
     public function test_user_cant_store_todo_list_without_title()
@@ -88,17 +87,22 @@ class TodoListTest extends TestCase
         $this->postJson(route('todo-list.store'), $todoList)->assertUnprocessable()->assertJsonValidationErrors(['title']);;
     }
 
+    public function test_user_cant_delete_a_todo_list_from_another_user()
+    {
+        $todoListAnotherUser = $this->createTodoList();
+        $this->authUser();
 
+        $this->deleteJson(route('todo-list.destroy', $todoListAnotherUser->id))->assertStatus(Response::HTTP_NOT_FOUND);
+        $this->assertDatabaseHas('todo_lists', ['id' => $todoListAnotherUser->id]);
+    }
 
-//    public function test_user_cant_delete_a_todo_list_from_another_user()
-//    {
-//        $this->withExceptionHandling();
-//
-//        $user2 = $this->createUser();
-//        $todoList = $this->createTodoList(['user_id' => $user2->id]);
-//
-//        $this->deleteJson(route('todo-list.destroy', $todoList->id));
-//        $this->assertDatabaseHas('todo_lists', ['id' => $todoList->id]);
-//    }
+    public function test_user_cant_update_a_todo_list_from_another_user()
+    {
+        $todoListAnotherUser = $this->createTodoList();
+        $this->authUser();
+
+        $this->patchJson(route('todo-list.update', $todoListAnotherUser->id), ['title' =>'Title Updated!'])->assertStatus(Response::HTTP_NOT_FOUND);
+        $this->assertDatabaseHas('todo_lists', ['title' => $todoListAnotherUser->title]);
+    }
 
 }

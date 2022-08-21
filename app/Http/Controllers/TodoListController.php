@@ -27,6 +27,7 @@ class TodoListController extends Controller
             return response('', Response::HTTP_NOT_FOUND);
         }
 
+        $all = $request->all();
         $todoList->update($request->all());
         return new TodoListResource($todoList);
 

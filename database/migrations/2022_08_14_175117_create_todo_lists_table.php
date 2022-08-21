@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('title')->nullable(false);
             $table->text('description')->nullable(true)->default('');
             $table->boolean('active')->default(true);
+            $table->boolean('has_timer')->default(false);
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade');
