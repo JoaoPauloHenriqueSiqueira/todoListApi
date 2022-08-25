@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pipeline\Pipeline;
 
 class TodoList extends Model
@@ -19,6 +20,11 @@ class TodoList extends Model
             $item->user_id = auth()->id();
             $item->active = true;
         });
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
     }
 
     public static function allTodoListFromUser($userId)
