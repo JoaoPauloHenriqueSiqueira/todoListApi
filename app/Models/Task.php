@@ -12,11 +12,19 @@ class Task extends Model
 {
     use HasFactory;
 
-    public const NOT_STARTED = 'not_started';
-    public const PENDING = 'pending';
-    public const STARTED = 'started';
+    public const NOT_STARTED = 'NOT_STARTED';
+    public const PROCESSING = 'PROCESSING';
+    public const FINISHED = 'FINISHED';
 
     protected $guarded = [];
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($item) {
+            $item->user_id = auth()->id();
+        });
+    }
 
     public function todo_list(): BelongsTo
     {

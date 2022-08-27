@@ -23,6 +23,11 @@ abstract class TestCase extends BaseTestCase
         return User::factory()->create($args);
     }
 
+    public function setUser($user)
+    {
+      return Sanctum::actingAs($user);
+    }
+
     public function authUser()
     {
         $user = $this->createUser();
