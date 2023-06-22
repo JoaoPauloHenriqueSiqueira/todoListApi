@@ -23,7 +23,7 @@ class TaskTest extends TestCase
         $this->createTask(['todo_list_id' => $todoList->id]);
         $this->createTask(['todo_list_id' => $todoList->id]);
 
-        $response = $this->getJson(route('todo-list.task.index', $todoList->id))->assertOk()->json('data');
+        $response = $this->getJson(route('todo-list.task.index', $todoList->id))->assertOk()->json();
         $this->assertEquals(2, count($response));
     }
 
@@ -39,7 +39,7 @@ class TaskTest extends TestCase
         $this->createTask(['todo_list_id' => $todoList2->id]);
 
         $this->setUser($user);
-        $response = $this->getJson(route('todo-list.task.index', $todoList->id))->assertOk()->json('data');
+        $response = $this->getJson(route('todo-list.task.index', $todoList->id))->assertOk()->json();
         $this->assertEquals(2, count($response));
     }
 
