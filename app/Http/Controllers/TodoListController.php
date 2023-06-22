@@ -18,6 +18,15 @@ class TodoListController extends Controller
         return TodoListResource::collection(TodoList::allTodoListFromUser(auth()->id()));
     }
 
+    public function show(TodoList $todoList)
+    {
+        if ($this->valid($todoList)) {
+            return response('', Response::HTTP_NOT_FOUND);
+        }
+
+        return new TodoListResource($todoList);
+    }
+
     public function store(TodoListRequest $request)
     {
         $todoList = TodoList::create($request->validated());

@@ -20,8 +20,8 @@ class TaskController extends Controller
             return response('', Response::HTTP_NOT_FOUND);
         }
 
-        $tasks = $todo_list->tasks;
-        return TaskResource::collection($tasks);
+        return $todo_list->tasks;
+        return TaskResource::collection($tasks->all());
     }
 
     public function store(TaskRequest $request, TodoList $todo_list)

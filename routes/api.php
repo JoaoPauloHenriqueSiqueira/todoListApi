@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\TodoListController;
 use App\Http\Controllers\TaskController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\TodoListController;
 use Illuminate\Support\Facades\Route;
 
 

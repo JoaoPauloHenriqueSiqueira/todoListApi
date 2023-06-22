@@ -11,6 +11,8 @@ class RegisterController extends Controller
 {
     public function __invoke(RegisterRequest $request)
     {
-        return User::create($request->validated());
+        $validated = $request->validated();
+        $validated['password'] = bcrypt($validated['password']);
+        return User::create($validated);
     }
 }
