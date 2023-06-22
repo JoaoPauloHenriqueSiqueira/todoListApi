@@ -31,6 +31,7 @@ class TaskController extends Controller
         }
 
         $task = $todo_list->tasks()->create($request->all());
+
         return new TaskResource($task);
     }
 
