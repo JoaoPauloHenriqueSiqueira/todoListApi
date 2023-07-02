@@ -15,12 +15,15 @@ class TaskResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'=> $request->id,
-            'status' => $request->status,
-            'title' => $request->title,
-            'description' => $request->description,
-            'created_at' => $request->created_at,
-            'updated_at' => $request->updated_at
-            ];
+            'id'=> $this->id,
+            'status' => $this->status,
+            'title' => $this->title,
+            'description' => $this->description,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'started_at' =>$this->started_at,
+            'finished_at' =>$this->finished_at,
+
+        ];
     }
 }

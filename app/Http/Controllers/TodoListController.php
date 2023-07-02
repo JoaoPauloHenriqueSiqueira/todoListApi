@@ -29,7 +29,7 @@ class TodoListController extends Controller
 
     public function store(TodoListRequest $request)
     {
-        $todoList = TodoList::create($request->validated());
+        $todoList = TodoList::create($request->all());
         return new TodoListResource($todoList);
     }
 
