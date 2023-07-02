@@ -32,7 +32,7 @@ class TodoListResource extends JsonResource
                 'parts' => 2,
                 'syntax' => CarbonInterface::DIFF_ABSOLUTE,
             ];
-            $obj['total_time'] = Carbon::parse($this->updated_at)->diffForHumans(Carbon::parse($this->created_at), $options);
+            $obj['total_time'] = Carbon::parse($this->started_at)->diffForHumans(Carbon::parse($this->created_at), $options);
         }
 
         return $obj;

@@ -23,6 +23,7 @@ class Task extends Model
         parent::boot();
         self::creating(function ($item) {
             $item->user_id = auth()->id();
+            $item->status = self::NOT_STARTED;
         });
     }
 
